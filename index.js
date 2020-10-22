@@ -102,7 +102,7 @@ function requestbody(opts) {
         }
       } catch (parsingError) {
         if (typeof opts.onError === 'function') {
-          opts.onError(parsingError, ctx);
+          bodyPromise = Promise.resolve(opts.onError(parsingError, ctx));
         } else {
           throw parsingError;
         }
