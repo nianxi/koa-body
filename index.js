@@ -112,10 +112,7 @@ function requestbody(opts) {
 
     bodyPromise = bodyPromise || Promise.resolve({});
     return bodyPromise.catch(function(parsingError) {
-      if (typeof opts.onError === 'function') {
-        console.log('catch error')
-        opts.onError(parsingError, ctx);
-      } else {
+      if (typeof opts.onError !== 'function') {
         throw parsingError;
       }
       return next();
