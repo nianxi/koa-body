@@ -101,7 +101,8 @@ function requestbody(opts) {
           bodyPromise = formy(ctx, opts.formidable);
         }
       } catch (parsingError) {
-        if (typeof opts.onError === 'function') {
+        console.log('type', typeof opts.onError)
+        if (opts.onError) {
           bodyPromise = Promise.resolve(opts.onError(parsingError, ctx));
           console.log('bodyPromise', bodyPromise)
         } else {
@@ -112,9 +113,7 @@ function requestbody(opts) {
 
     bodyPromise = bodyPromise || Promise.resolve({});
     return bodyPromise.catch(function(parsingError) {
-      if (typeof opts.onError !== 'function') {
-        throw parsingError;
-      }
+      if (typeof opts.onError !== 'function')  throw parsingError;
       return next();
     })
     .then(function(body) {
