@@ -101,8 +101,8 @@ function requestbody(opts) {
           bodyPromise = formy(ctx, opts.formidable);
         }
       } catch (parsingError) {
-        if (opts.onError) {
-          bodyPromise = Promise.resolve(opts.onError(parsingError, ctx));
+        if (typeof opts.onError === 'function') {
+          opts.onError(parsingError, ctx);
         } else {
           throw parsingError;
         }
@@ -111,10 +111,12 @@ function requestbody(opts) {
 
     bodyPromise = bodyPromise || Promise.resolve({});
     return bodyPromise.catch(function(parsingError) {
-      if (typeof opts.onError !== 'function') {
+      if (typeof opts.onError === 'function') {
+        opts.onError(parsingError, ctx);
+      } else {
         throw parsingError;
-        return next();
       }
+      return next();
     })
     .then(function(body) {
       if (opts.patchNode) {
