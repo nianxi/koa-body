@@ -54,6 +54,7 @@ function requestbody(opts) {
   opts.formidable = 'formidable' in opts ? opts.formidable : {};
   opts.includeUnparsed = 'includeUnparsed' in opts ? opts.includeUnparsed : false
   opts.textLimit = 'textLimit' in opts ? opts.textLimit : '56kb';
+  opts.getSkipFlag = 'getSkipFlag' in opts ? opts.getSkipFlag : () => false;
 
   // @todo: next major version, opts.strict support should be removed
   if (opts.strict && opts.parsedMethods) {
@@ -73,6 +74,7 @@ function requestbody(opts) {
   opts.parsedMethods = opts.parsedMethods.map(function (method) { return method.toUpperCase() })
 
   return function (ctx, next) {
+    if (opts.getSkipFlag(ctx)) return next();
     var bodyPromise;
     // only parse the body on specifically chosen methods
     if (opts.parsedMethods.includes(ctx.method.toUpperCase())) {
